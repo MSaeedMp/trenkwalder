@@ -3,9 +3,9 @@ from pathlib import Path
 import lancedb
 
 from app.core.observability import get_logger
-from etl.structured.extract import read_csv
-from etl.structured.load import write_employees
-from etl.structured.transform import to_employees
+from pipelines.structured.extract import read_csv
+from pipelines.structured.load import write_employees
+from pipelines.structured.transform import to_employees
 
 logger = get_logger(__name__)
 

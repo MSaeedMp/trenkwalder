@@ -111,4 +111,4 @@ init:
 
 # Inspect the HR MCP server directly
 mcp-dev:
-    cd backend && uv run mcp dev app/integrations/hr_mcp_server.py
+    cd backend && uv run mcp dev mcp_server/server.py

@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from etl.unstructured.extract import parse_markdown
-from etl.unstructured.transform import chunk_document
+from pipelines.unstructured.extract import parse_markdown
+from pipelines.unstructured.transform import chunk_document
 
 MD_CONTENT = """# Benefits
 

@@ -1,3 +1,5 @@
+import asyncio
+import sys
 from contextlib import asynccontextmanager
 
 import lancedb
@@ -9,7 +11,7 @@ from app.api.v1.router import router as v1_router
 from app.core.config import Settings
 from app.core.errors import install_exception_handlers
 from app.core.observability import AccessLogMiddleware, get_logger, setup_logger
-from etl import run_all_pipelines
+from pipelines import run_all_pipelines
 
 settings = Settings()
 logger = get_logger(__name__)
@@ -27,7 +29,21 @@ async def lifespan(app: FastAPI):
     run_all_pipelines(settings, db)
     app.state.db = db
 
+    mcp_process = await asyncio.create_subprocess_exec(
+        sys.executable,
+        "-c",
+        "from mcp_server.server import mcp; mcp.run(transport='stdio')",
+        stdin=asyncio.subprocess.PIPE,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    app.state.mcp_process = mcp_process
+    logger.info("mcp_server_started", pid=mcp_process.pid)
+
     yield
+
+    mcp_process.terminate()
+    await mcp_process.wait()
     logger.info("app_shutting_down", title=app.title)
 
 

@@ -4,10 +4,10 @@ from pathlib import Path
 import lancedb
 import pytest
 
-from etl.structured.extract import read_csv
-from etl.structured.load import write_employees
-from etl.structured.pipeline import run_structured
-from etl.structured.transform import to_employees
+from pipelines.structured.extract import read_csv
+from pipelines.structured.load import write_employees
+from pipelines.structured.transform import to_employees
+from pipelines.structured.trigger import run_structured
 
 CSV_CONTENT = """id,name,email,department,role,manager,start_date,location
 e001,Alice,alice@test.com,Engineering,Developer,Bob,2021-01-01,Vienna

@@ -2,9 +2,9 @@ import lancedb
 
 from app.core.observability import get_logger
 from app.models import Chunk
-from etl.unstructured.extract import load_documents
-from etl.unstructured.load import write_chunks, write_manifest
-from etl.unstructured.transform import (
+from pipelines.unstructured.extract import load_documents
+from pipelines.unstructured.load import write_chunks, write_manifest
+from pipelines.unstructured.transform import (
     EmbeddingProvider,
     GeminiEmbeddingProvider,
     chunk_document,

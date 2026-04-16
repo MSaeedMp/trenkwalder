@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from etl.unstructured.extract import load_documents
+from pipelines.unstructured.extract import load_documents
 
 MD_CONTENT = """# Benefits
 

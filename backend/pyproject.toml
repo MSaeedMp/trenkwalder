@@ -27,7 +27,7 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["app*", "etl*"]
+include = ["app*", "pipelines*", "mcp_server*"]
 
 [dependency-groups]
 dev = [
@@ -54,7 +54,7 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
-ignore = ["E501"]
+ignore = ["E501", "SIM117"]
 
 [tool.ruff.format]
 quote-style = "double"

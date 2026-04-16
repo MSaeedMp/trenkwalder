@@ -2,8 +2,8 @@ import lancedb
 
 from app.core.config import Settings
 from app.core.observability import get_logger
-from etl.structured.pipeline import run_structured
-from etl.unstructured.pipeline import run_unstructured
+from pipelines.structured.trigger import run_structured
+from pipelines.unstructured.trigger import run_unstructured
 
 logger = get_logger(__name__)
 

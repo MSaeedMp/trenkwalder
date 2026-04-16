@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from etl.structured.extract import read_csv
-from etl.structured.transform import to_employees
+from pipelines.structured.extract import read_csv
+from pipelines.structured.transform import to_employees
 
 CSV_CONTENT = """id,name,email,department,role,manager,start_date,location
 e001,Alice,alice@test.com,Engineering,Developer,Bob,2021-01-01,Vienna
