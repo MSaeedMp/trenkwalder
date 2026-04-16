@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+import lancedb
 from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +9,7 @@ from app.api.v1.router import router as v1_router
 from app.core.config import Settings
 from app.core.errors import install_exception_handlers
 from app.core.observability import AccessLogMiddleware, get_logger, setup_logger
+from etl import run_all_pipelines
 
 settings = Settings()
 logger = get_logger(__name__)
@@ -20,6 +22,11 @@ async def lifespan(app: FastAPI):
         json_format=settings.app_env != "development",
     )
     logger.info("app_starting", title=app.title, env=settings.app_env)
+
+    db = lancedb.connect(settings.vector_store_path)
+    run_all_pipelines(settings, db)
+    app.state.db = db
+
     yield
     logger.info("app_shutting_down", title=app.title)
 

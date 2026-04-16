@@ -12,7 +12,7 @@ services:
       - .env
     environment:
       - DOCS_DIR=/app/docs
-      - VECTOR_STORE_PATH=/app/.lancedb
+      - VECTOR_STORE_PATH=/tmp/trenkwalder-lancedb
     volumes:
       - ./backend:/app:ro
     healthcheck:

@@ -14,10 +14,6 @@ install:
 dev port="8000":
     cd backend && uv run uvicorn app.main:app --reload --port {{port}}
 
-# Build the LanceDB vector index from docs/
-ingest:
-    cd backend && uv run python ingest.py
-
 # --- Backend: Quality --------------------------------------------------------
 
 # Format + lint
@@ -28,13 +24,25 @@ lint:
 typecheck:
     cd backend && uv run pyright .
 
-# Run tests
+# Run all tests
 test:
     cd backend && uv run pytest -v
 
+# Run unit tests only (fast, no I/O)
+unit:
+    cd backend && uv run pytest -v -m unit
+
+# Run integration tests only (real I/O)
+integration:
+    cd backend && uv run pytest -v -m integration
+
+# Run contract tests only (wire format)
+contract:
+    cd backend && uv run pytest -v -m contract
+
 # Run tests with coverage report
 test-cov:
-    cd backend && uv run pytest -v --cov=app --cov-report=term-missing
+    cd backend && uv run pytest -v --cov=app --cov=etl --cov-report=term-missing
 
 # Run lint + typecheck + tests
 ci:
@@ -72,7 +80,7 @@ frontend-test:
 
 # Start all services via docker-compose
 up:
-    docker compose up -d
+    docker compose up -d --build
 
 # Stop all services
 down:
@@ -99,7 +107,7 @@ dev-local:
 # Copy .env.example -> .env (initial setup)
 init:
     cp -n .env.example .env || true
-    @echo "Done. Set GEMINI_API_KEY in .env, then: just ingest && just dev"
+    @echo "Done. Set GEMINI_API_KEY in .env, then: just dev"
 
 # Inspect the HR MCP server directly
 mcp-dev:

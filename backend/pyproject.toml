@@ -15,18 +15,19 @@ dependencies = [
     "google-genai>=1.0.0",
     "mcp>=1.0.0",
     "lancedb>=0.17.0",
-    "pandas>=2.2.0",
+    "polars>=1.0.0",
     "pypdf>=5.0.0",
     "markdown-it-py>=3.0.0",
     "structlog>=23.2.0",
     "httpx>=0.25.0",
     "python-multipart>=0.0.6",
     "asgi-correlation-id>=4.3.4",
+    "tiktoken>=0.7.0",
 ]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["app*"]
+include = ["app*", "etl*"]
 
 [dependency-groups]
 dev = [
@@ -41,6 +42,11 @@ dev = [
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+markers = [
+    "unit: fast tests, no I/O, mocked boundaries",
+    "integration: real I/O (LanceDB, files, subprocess)",
+    "contract: verify wire format (AI SDK protocol lines)",
+]
 
 [tool.ruff]
 target-version = "py311"
@@ -57,3 +63,4 @@ indent-style = "space"
 [tool.pyright]
 pythonVersion = "3.11"
 typeCheckingMode = "strict"
+reportMissingTypeStubs = false
