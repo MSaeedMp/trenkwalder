@@ -20,7 +20,6 @@ def run_all_pipelines(settings: Settings, db: lancedb.DBConnection) -> None:
     if "chunks" not in existing:
         run_unstructured(
             docs_dir=settings.docs_dir,
-            vector_store_path=settings.vector_store_path,
             db=db,
             embedding_provider=settings.embedding_provider,
             gemini_api_key=settings.gemini_api_key,

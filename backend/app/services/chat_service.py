@@ -13,7 +13,7 @@ from app.domain.chat.system_prompt import SYSTEM_PROMPT
 from app.models import Message
 from app.repositories.conversation_repository import ConversationRepository
 from app.schemas.rag import ChunkResult
-from app.tools.registry import Services
+from app.tools.registry import Services, dispatch
 
 logger = get_logger(__name__)
 
@@ -75,10 +75,13 @@ class ChatService:
         collected_tool_results: list[dict[str, object]] = []
         retrieved_chunks: list[ChunkResult] = []
 
+        async def execute_tool(name: str, args: dict[str, Any]) -> str:
+            return await dispatch(name, args, self._services)
+
         async for line in stream_agentic(
             chat=chat,
             user_message=user_message,
-            services=self._services,
+            execute_tool=execute_tool,
             retrieved_chunks=retrieved_chunks,
         ):
             yield line.encode("utf-8")

@@ -3,7 +3,7 @@ import lancedb
 from app.core.observability import get_logger
 from app.models import Chunk
 from pipelines.unstructured.extract import load_documents
-from pipelines.unstructured.load import write_chunks, write_manifest
+from pipelines.unstructured.load import write_chunks
 from pipelines.unstructured.transform import (
     EmbeddingProvider,
     GeminiEmbeddingProvider,
@@ -27,7 +27,6 @@ def _build_embedding_provider(
 
 def run_unstructured(
     docs_dir: str,
-    vector_store_path: str,
     db: lancedb.DBConnection,
     embedding_provider: str,
     gemini_api_key: str,
@@ -58,6 +57,5 @@ def run_unstructured(
     embedded = embed_chunks(all_chunks, provider)
 
     write_chunks(db, embedded)
-    write_manifest(vector_store_path, embedded)
 
     logger.info("unstructured_completed", chunks_loaded=len(embedded))

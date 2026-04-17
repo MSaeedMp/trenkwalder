@@ -1,6 +1,6 @@
 import json
 import uuid
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable, Callable
 from typing import Any, cast
 
 from google.genai import types
@@ -9,11 +9,12 @@ from google.genai.chats import AsyncChat
 from app.core.observability import get_logger
 from app.domain.chat.citations import Citation, parse_citations, validate_citations
 from app.schemas.rag import ChunkResult
-from app.tools.registry import Services, dispatch
 
 logger = get_logger(__name__)
 
 MAX_TOOL_ROUNDS = 5
+
+ToolExecutor = Callable[[str, dict[str, Any]], Awaitable[str]]
 
 
 def aisdk_text(text: str) -> str:
@@ -53,7 +54,7 @@ def _parse_chunk_result(cd: dict[str, Any]) -> ChunkResult:
 async def stream_agentic(  # noqa: C901
     chat: AsyncChat,
     user_message: str,
-    services: Services,
+    execute_tool: ToolExecutor,
     retrieved_chunks: list[ChunkResult] | None = None,
 ) -> AsyncIterator[str]:
     """Run the agentic loop and yield AI SDK Data Stream Protocol v4 lines."""
@@ -92,7 +93,7 @@ async def stream_agentic(  # noqa: C901
             fc_args: dict[str, Any] = dict(fc.args) if fc.args else {}  # type: ignore[reportUnknownArgumentType]
             yield aisdk_tool_call(tool_call_id, fc_name, fc_args)
 
-            result = await dispatch(fc_name, fc_args, services)
+            result = await execute_tool(fc_name, fc_args)
             yield aisdk_tool_result(tool_call_id, result)
 
             if fc_name == "search_documents":

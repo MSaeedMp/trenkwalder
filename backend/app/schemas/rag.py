@@ -13,15 +13,6 @@ class RawDocument(BaseModel):
     pages: list[PageText]
 
 
-class DocumentMetadata(BaseModel):
-    doc_id: str
-    path: str
-    format: str
-    title: str
-    num_chunks: int
-    ingested_at: str
-
-
 class ChunkResult(BaseModel):
     text: str
     source: str
