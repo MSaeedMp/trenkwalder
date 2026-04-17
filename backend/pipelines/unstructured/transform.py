@@ -1,6 +1,6 @@
 from dataclasses import replace
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol, cast
 
 import tiktoken
 
@@ -74,7 +74,7 @@ class GeminiEmbeddingProvider:
     def embed(self, texts: list[str]) -> list[list[float]]:
         result = self._client.models.embed_content(  # type: ignore[reportUnknownMemberType]
             model=self._model,
-            contents=texts,
+            contents=cast(Any, texts),
         )
         vectors: list[list[float]] = []
         for e in result.embeddings or []:

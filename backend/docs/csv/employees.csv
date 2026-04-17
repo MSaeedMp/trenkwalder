@@ -1,0 +1,16 @@
+id,name,email,department,role,manager,start_date,location
+me,Alex Johnson,alex.johnson@trenkwalder.com,Engineering,Senior Software Engineer,Maria Schmidt,2021-03-15,Vienna
+e001,Maria Schmidt,maria.schmidt@trenkwalder.com,Engineering,Engineering Manager,,2019-06-01,Vienna
+e002,Thomas Weber,thomas.weber@trenkwalder.com,Engineering,Backend Developer,Maria Schmidt,2022-01-10,Vienna
+e003,Sarah Chen,sarah.chen@trenkwalder.com,Engineering,Frontend Developer,Maria Schmidt,2022-08-22,Vienna
+e004,Michael Brown,michael.brown@trenkwalder.com,Engineering,DevOps Engineer,Maria Schmidt,2020-11-03,Graz
+e005,Lisa Mueller,lisa.mueller@trenkwalder.com,HR,HR Director,,2018-04-15,Vienna
+e006,Anna Berger,anna.berger@trenkwalder.com,HR,HR Specialist,Lisa Mueller,2021-09-01,Vienna
+e007,David Kim,david.kim@trenkwalder.com,Sales,Sales Director,,2019-01-20,Vienna
+e008,Emma Wilson,emma.wilson@trenkwalder.com,Sales,Account Manager,David Kim,2020-07-14,Linz
+e009,James Taylor,james.taylor@trenkwalder.com,Sales,Account Manager,David Kim,2021-05-03,Vienna
+e010,Sophie Martin,sophie.martin@trenkwalder.com,Finance,CFO,,2017-08-01,Vienna
+e011,Robert Fischer,robert.fischer@trenkwalder.com,Finance,Financial Analyst,Sophie Martin,2022-03-28,Vienna
+e012,Julia Hoffman,julia.hoffman@trenkwalder.com,Finance,Accountant,Sophie Martin,2020-10-12,Graz
+e013,Daniel Wagner,daniel.wagner@trenkwalder.com,Marketing,Marketing Manager,,2019-11-05,Vienna
+e014,Laura Bauer,laura.bauer@trenkwalder.com,Marketing,Content Specialist,Daniel Wagner,2023-01-16,Vienna
