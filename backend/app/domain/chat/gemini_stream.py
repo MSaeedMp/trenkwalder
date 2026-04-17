@@ -62,16 +62,22 @@ async def stream_agentic(  # noqa: C901
         retrieved_chunks = []
 
     all_text = ""
+    next_message: str | list[types.Part] = user_message
 
-    for round_num in range(MAX_TOOL_ROUNDS):
-        msg = user_message if round_num == 0 else "continue"
-        response = await chat.send_message_stream(msg)  # type: ignore[reportUnknownMemberType]
+    for _round_num in range(MAX_TOOL_ROUNDS):
+        response = await chat.send_message_stream(next_message)  # type: ignore[reportUnknownMemberType]
 
         round_text = ""
         function_calls: list[types.FunctionCall] = []
 
         async for chunk in response:  # type: ignore[reportUnknownVariableType]
-            parts = chunk.candidates[0].content.parts  # type: ignore[reportOptionalMemberAccess,reportUnknownMemberType]
+            candidates = getattr(chunk, "candidates", None)  # type: ignore[reportUnknownArgumentType]
+            if not candidates:
+                continue
+            content = getattr(candidates[0], "content", None)  # type: ignore[reportUnknownArgumentType]
+            parts = getattr(content, "parts", None) if content else None  # type: ignore[reportUnknownArgumentType]
+            if not parts:
+                continue
             for part in parts:  # type: ignore[reportUnknownVariableType]
                 text_val = cast(str | None, getattr(part, "text", None))  # type: ignore[reportUnknownArgumentType]
                 fc_val = getattr(part, "function_call", None)  # type: ignore[reportUnknownArgumentType]
@@ -113,7 +119,8 @@ async def stream_agentic(  # noqa: C901
                 )
             )
 
-        await chat.send_message(function_responses)  # type: ignore[reportUnknownMemberType]
+        # Send function responses as the next message — Gemini will use the results to answer
+        next_message = function_responses
 
     else:
         yield aisdk_text("\n\n[Maximum tool rounds reached]")

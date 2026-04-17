@@ -28,6 +28,11 @@ async def chat(
 
     return StreamingResponse(
         svc.stream(conversation_id=conversation_id, user_message=user_message),
-        media_type="text/plain; charset=utf-8",
-        headers={"x-vercel-ai-data-stream": "v1"},
+        media_type="text/event-stream",
+        headers={
+            "x-vercel-ai-data-stream": "v1",
+            "Cache-Control": "no-cache, no-transform",
+            "X-Accel-Buffering": "no",
+            "Connection": "keep-alive",
+        },
     )

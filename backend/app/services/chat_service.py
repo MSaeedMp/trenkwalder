@@ -1,3 +1,4 @@
+import asyncio
 import contextlib
 import json
 from collections.abc import AsyncIterator
@@ -59,6 +60,7 @@ class ChatService:
 
         config = types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
+            thinking_config=types.ThinkingConfig(thinking_budget=0),
             tools=[types.Tool(function_declarations=self._tool_declarations)],
         )
 
@@ -85,6 +87,7 @@ class ChatService:
             retrieved_chunks=retrieved_chunks,
         ):
             yield line.encode("utf-8")
+            await asyncio.sleep(0)
 
             if line.startswith("0:"):
                 with contextlib.suppress(json.JSONDecodeError, TypeError):

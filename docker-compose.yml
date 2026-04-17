@@ -4,8 +4,7 @@ services:
   backend:
     container_name: trenkwalder-backend
     build:
-      context: .
-      dockerfile: backend/Dockerfile
+      context: ./backend
     ports:
       - "8000:8000"
     env_file:
@@ -13,25 +12,19 @@ services:
     environment:
       - DOCS_DIR=/app/docs
       - VECTOR_STORE_PATH=/tmp/trenkwalder-lancedb
-    volumes:
-      - ./backend:/app:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      start_period: 40s
-      retries: 3
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
 
   frontend:
     container_name: trenkwalder-frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     environment:
       - NODE_ENV=development
     depends_on:

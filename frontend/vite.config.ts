@@ -19,8 +19,15 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: process.env.VITE_API_URL || "http://localhost:8000",
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("proxyRes", (proxyRes) => {
+            // Disable buffering so streaming responses arrive chunk by chunk
+            proxyRes.headers["cache-control"] = "no-cache"
+            proxyRes.headers["x-accel-buffering"] = "no"
+          })
+        },
       },
     },
   },

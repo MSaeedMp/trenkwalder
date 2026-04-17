@@ -1,5 +1,6 @@
-import { createRootRoute, Outlet, ScrollRestoration } from "@tanstack/react-router";
+import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { createRootRoute, Outlet, ScrollRestoration } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
   component: RootLayout,
@@ -7,9 +8,11 @@ export const Route = createRootRoute({
 
 function RootLayout() {
   return (
-    <TooltipProvider>
-      <ScrollRestoration />
-      <Outlet />
-    </TooltipProvider>
+    <ThemeProvider defaultTheme="light">
+      <TooltipProvider>
+        <ScrollRestoration />
+        <Outlet />
+      </TooltipProvider>
+    </ThemeProvider>
   );
 }

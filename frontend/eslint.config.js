@@ -34,10 +34,13 @@ export default defineConfig([
   {
     files: [
       "src/components/ui/**/*.{ts,tsx}",
+      "src/components/ai-elements/**/*.{ts,tsx}",
+      "src/components/theme-provider.tsx",
       "src/routes/**/*.{ts,tsx}",
     ],
     rules: {
       "react-refresh/only-export-components": "off",
+      "react-hooks/refs": "off",
     },
   },
 ]);

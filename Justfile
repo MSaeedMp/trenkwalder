@@ -36,10 +36,6 @@ unit:
 integration:
     cd backend && uv run pytest -v -m integration
 
-# Run contract tests only (wire format)
-contract:
-    cd backend && uv run pytest -v -m contract
-
 # Run tests with coverage report
 test-cov:
     cd backend && uv run pytest -v --cov=app --cov=etl --cov-report=term-missing
