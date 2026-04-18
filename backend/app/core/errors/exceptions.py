@@ -18,6 +18,11 @@ class BusinessError(Exception):
         self.metadata = metadata or {}
 
 
+class BadRequest(BusinessError):
+    status_code = 400
+    default_code = "BAD_REQUEST"
+
+
 class NotFound(BusinessError):
     status_code = 404
     default_code = "NOT_FOUND"

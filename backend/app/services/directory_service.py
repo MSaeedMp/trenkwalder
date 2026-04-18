@@ -1,5 +1,6 @@
 from typing import Any
 
+from app.core.errors.catalog.directory import DirectoryErrors
 from app.core.observability import get_logger
 from app.models import Employee
 from app.repositories.employee_repository import EmployeeRepository
@@ -21,8 +22,7 @@ class DirectoryService:
     ) -> list[Employee]:
         """Search the employee directory by any combination of name, department, or role."""
         if not any([name, department, role]):
-            msg = "At least one of name, department, or role is required"
-            raise ValueError(msg)
+            raise DirectoryErrors.MISSING_SEARCH_CRITERIA.build()
 
         results: list[Employee] = []
         if name:

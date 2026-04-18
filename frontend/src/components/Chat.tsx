@@ -23,6 +23,7 @@ const SUGGESTIONS = [
 ];
 
 export function Chat() {
+  const [error, setError] = useState<string | null>(null);
   const { messages, input, handleInputChange, handleSubmit, status, stop, data, append } =
     useChat({
       api: "/api/v1/chat",
@@ -34,6 +35,10 @@ export function Chat() {
           content: message.content,
         })),
       }),
+      onError: (err) => {
+        setError(err.message || "Something went wrong. Please try again.");
+        setTimeout(() => setError(null), 5000);
+      },
     });
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -89,7 +94,6 @@ export function Chat() {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-background">
-      {/* Header */}
       <header className="flex shrink-0 items-center justify-between bg-background px-6 py-3">
         <button
           onClick={() => window.location.reload()}
@@ -118,7 +122,6 @@ export function Chat() {
         </div>
       </header>
 
-      {/* Messages area */}
       <div ref={scrollContainerRef} onScroll={handleScroll} className="relative min-h-0 flex-1 overflow-y-auto scrollbar-none">
         <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
           {messages.length === 0 ? (
@@ -164,8 +167,12 @@ export function Chat() {
         )}
       </div>
 
-      {/* Input bar */}
       <div className="shrink-0 bg-background px-4 pb-5 pt-3 sm:px-6">
+        {error && (
+          <div className="mx-auto mb-2 max-w-3xl rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-2.5 text-sm text-destructive">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="mx-auto max-w-3xl">
           <div className="overflow-hidden rounded-2xl border bg-card shadow-sm focus-within:ring-2 focus-within:ring-ring">
             <div className={cn("flex", !expanded && "min-h-[44px] items-center")}>

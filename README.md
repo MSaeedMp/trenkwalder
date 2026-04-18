@@ -111,30 +111,6 @@ On first startup, the backend automatically:
 2. Spawns the HR MCP server as a subprocess
 3. Connects the MCP client and discovers tools
 
-If you have Docker installed, you can skip the Python/Node setup entirely:
-
-```bash
-git clone <repo-url>
-cd trenkwalder
-
-cp .env.example .env
-# Edit .env → set GEMINI_API_KEY=your-key-here
-
-docker compose up -d --build
-```
-
-That's it. Open http://localhost:5173
-
-To check logs:
-```bash
-docker compose logs -f
-```
-
-To stop:
-```bash
-docker compose down
-```
-
 ### Run Tests
 
 ```bash
@@ -142,7 +118,7 @@ cd backend
 uv run pytest -v
 ```
 
-9 tests covering: health endpoint, ETL chunking, vector search, employee repository, MCP server, services (RAG, directory, HR), and tool dispatch.
+8 tests covering: chunking, vector search, employee repository, MCP server, services (RAG, directory, HR), and tool dispatch.
 
 ## Things to Try
 
@@ -163,30 +139,45 @@ uv run pytest -v
 ```
 backend/
 ├── app/
-│   ├── api/v1/chat.py          POST /api/v1/chat endpoint
-│   ├── clients/mcp_client.py   MCPClient — connects to HR MCP server
-│   ├── core/                   config, observability, errors
-│   ├── domain/chat/            agentic loop, citations, system prompt
-│   ├── models/                 DB table schemas (Employee, Chunk, Message, Conversation)
-│   ├── repositories/           LanceDB data access (vector, employee, conversation)
-│   ├── schemas/                API request/response models (Pydantic)
-│   ├── services/               business logic (ChatService, RAGService, DirectoryService, HRService)
-│   ├── tools/                  tool registry + Gemini function declarations
-│   └── main.py                 FastAPI app + lifespan
+│   ├── api/
+│   │   ├── deps.py                 FastAPI dependencies (ChatServiceDep, etc.)
+│   │   └── v1/
+│   │       ├── __init__.py         v1 router
+│   │       └── chat.py            POST /api/v1/chat endpoint
+│   ├── clients/
+│   │   └── mcp_client.py          MCPClient — connects to HR MCP server
+│   ├── core/
+│   │   ├── bootstrap/             lifespan, database init, MCP connection, service wiring
+│   │   ├── errors/                BusinessError hierarchy + per-feature error catalogs
+│   │   ├── observability/         structlog setup, access log middleware
+│   │   └── config.py              Pydantic Settings (env-driven)
+│   ├── domain/chat/               agentic loop, citations, system prompt
+│   ├── models/                    DB table schemas (Employee, Chunk, Message, Conversation)
+│   ├── repositories/              LanceDB data access (vector, employee, conversation)
+│   ├── schemas/                   API request/response models (Pydantic)
+│   ├── services/                  ChatService, RAGService, DirectoryService, HRService
+│   ├── tools/                     tool registry + Gemini function declarations
+│   └── main.py                    FastAPI app factory (thin — delegates to core/bootstrap)
 ├── pipelines/
-│   ├── structured/             CSV → polars → LanceDB (extract, transform, load, trigger)
-│   └── unstructured/           PDF/MD/TXT → chunk → embed → LanceDB
+│   ├── structured/                CSV → polars → LanceDB (extract, transform, load, trigger)
+│   └── unstructured/              PDF/MD/TXT → chunk → embed → LanceDB
 ├── mcp_server/
-│   └── server.py               Mock HR MCP server (FastMCP, stdio)
-├── docs/                       Sample knowledge base (PDF, MD, TXT, CSV)
-└── tests/                      unit + integration tests
+│   └── server.py                  Mock HR MCP server (FastMCP, stdio)
+├── docs/                          Sample knowledge base (PDF, MD, TXT, CSV)
+└── tests/
+    ├── unit/                      chunker, services, tool registry
+    └── integration/               vector repo, employee repo, MCP server
 
 frontend/
 ├── src/
-│   ├── components/Chat.tsx     Main chat UI with useChat hook
-│   ├── components/ui/          shadcn/ui components
-│   ├── routes/                 TanStack Router (file-based)
-│   └── lib/                    router, query client, utils
+│   ├── components/
+│   │   ├── Chat.tsx               Main chat UI with useChat hook
+│   │   ├── ModeToggle.tsx         Dark/light mode toggle
+│   │   ├── theme-provider.tsx     Theme context with localStorage persistence
+│   │   └── ui/                    shadcn/ui components
+│   ├── routes/                    TanStack Router (file-based)
+│   └── lib/                       router, query client, utils
+├── public/                        static assets (favicon, logo)
 └── index.html
 ```
 

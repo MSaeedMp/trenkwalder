@@ -119,7 +119,7 @@ async def stream_agentic(  # noqa: C901
                 )
             )
 
-        # Send function responses as the next message — Gemini will use the results to answer
+        # Gemini expects tool results as the next turn before it can answer.
         next_message = function_responses
 
     else:

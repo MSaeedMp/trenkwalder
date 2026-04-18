@@ -32,7 +32,7 @@ def run_unstructured(
     gemini_api_key: str,
     gemini_embedding_model: str,
 ) -> None:
-    """Run the unstructured ETL pipeline: docs → chunk → embed → LanceDB."""
+    """Run document parsing, chunking, embedding, and LanceDB loading."""
     logger.info("unstructured_started", docs_dir=docs_dir)
 
     if embedding_provider == "gemini" and not gemini_api_key:

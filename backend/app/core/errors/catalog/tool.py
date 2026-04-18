@@ -1,10 +1,5 @@
 from app.core.errors.catalog.base import BaseCatalog, ErrorSpec
-from app.core.errors.exceptions import BusinessError, NotFound
-
-
-class ToolError(BusinessError):
-    status_code = 500
-    default_code = "TOOL_ERROR"
+from app.core.errors.exceptions import NotFound, ServiceUnavailable
 
 
 class ToolErrors(BaseCatalog):
@@ -14,9 +9,9 @@ class ToolErrors(BaseCatalog):
     )
     TOOL_DISPATCH_FAILED = ErrorSpec(
         message="Tool {tool_name!r} failed: {reason}",
-        exception=ToolError,
+        exception=ServiceUnavailable,
     )
     TOOL_TIMEOUT = ErrorSpec(
         message="Tool {tool_name!r} timed out after {seconds}s",
-        exception=ToolError,
+        exception=ServiceUnavailable,
     )

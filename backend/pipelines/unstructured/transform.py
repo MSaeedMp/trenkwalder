@@ -13,7 +13,7 @@ _CHUNK_OVERLAP = 50
 
 
 def chunk_document(doc: RawDocument) -> list[Chunk]:
-    """Split a RawDocument into ~500-token chunks with 50-token overlap."""
+    """Split a document into overlapping token chunks."""
     source = Path(doc.path).name
     chunks: list[Chunk] = []
     chunk_idx = 0
@@ -91,7 +91,7 @@ def embed_chunks(chunks: list[Chunk], provider: EmbeddingProvider) -> list[Chunk
         return chunks
 
     texts = [c.text for c in chunks]
-    # Batch in groups of 100 to avoid API limits
+    # Keep batches below common embedding API limits.
     batch_size = 100
     all_vectors: list[list[float]] = []
     for i in range(0, len(texts), batch_size):

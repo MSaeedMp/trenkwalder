@@ -4,7 +4,7 @@ set dotenv-load := true
 default:
     @just --list
 
-# --- Backend: Development ----------------------------------------------------
+# --- Backend -----------------------------------------------------------------
 
 # Install backend dependencies
 install:
@@ -13,8 +13,6 @@ install:
 # Run the backend with hot-reload: just dev [port=8000]
 dev port="8000":
     cd backend && uv run uvicorn app.main:app --reload --port {{port}}
-
-# --- Backend: Quality --------------------------------------------------------
 
 # Format + lint
 lint:
@@ -74,9 +72,17 @@ frontend-test:
 
 # --- Docker ------------------------------------------------------------------
 
-# Start all services via docker-compose
-up:
+# Build all Docker images
+build:
+    docker compose build
+
+# Build and start all services
+build-up:
     docker compose up -d --build
+
+# Start all services
+up:
+    docker compose up -d
 
 # Stop all services
 down:
@@ -86,19 +92,13 @@ down:
 logs service="":
     {{ if service == "" { "docker compose logs -f" } else { "docker compose logs -f " + service } }}
 
-# Rebuild and start all services
-up-build:
-    docker compose up -d --build
-
-# --- Local Dev (no Docker) ---------------------------------------------------
+# --- Local -------------------------------------------------------------------
 
 # Start backend + frontend locally (no Docker)
 dev-local:
     @echo "Starting backend on :8000 and frontend on :5173..."
     @just dev &
     @just frontend-dev
-
-# --- Utilities ---------------------------------------------------------------
 
 # Copy .env.example -> .env (initial setup)
 init:

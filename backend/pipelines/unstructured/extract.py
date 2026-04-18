@@ -31,6 +31,7 @@ def parse_markdown(path: Path) -> RawDocument:
     tokens = md.parse(text)
 
     pages: list[PageText] = []
+    # Keep the current heading trail so retrieved chunks can cite a useful section.
     heading_path: list[str] = []
     current_text: list[str] = []
     section_idx = 0

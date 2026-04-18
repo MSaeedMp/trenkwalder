@@ -1,4 +1,5 @@
 from app.core.errors.catalog.base import BaseCatalog, ErrorSpec
+from app.core.errors.catalog.directory import DirectoryErrors
 from app.core.errors.catalog.framework import (
     CODE_HTTP_ERROR,
     CODE_INTERNAL_ERROR,
@@ -18,6 +19,7 @@ __all__ = [
     "MESSAGE_INTERNAL_ERROR",
     "MESSAGE_VALIDATION_ERROR",
     "BaseCatalog",
+    "DirectoryErrors",
     "ErrorSpec",
     "HRErrors",
     "IngestionErrors",

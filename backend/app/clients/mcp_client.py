@@ -20,7 +20,7 @@ JSON_TYPE_TO_GEMINI: dict[str, types.Type] = {
 
 
 def convert_schema(schema: dict[str, Any]) -> types.Schema:
-    """Convert a JSON Schema dict to a google.genai Schema."""
+    """Map the JSON Schema subset MCP tools use into Gemini's schema type."""
     clean: dict[str, Any] = {k: v for k, v in schema.items() if k not in JSON_SCHEMA_NOISE}
     schema_type = JSON_TYPE_TO_GEMINI.get(str(clean.get("type", "object")), types.Type.OBJECT)
 

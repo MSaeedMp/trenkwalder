@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 
 
 def run_structured(docs_dir: str, db: lancedb.DBConnection) -> None:
-    """Run the structured ETL pipeline: CSV → Employee dataclass → LanceDB."""
+    """Load employee CSV rows into LanceDB."""
     csv_path = Path(docs_dir) / "csv" / "employees.csv"
     if not csv_path.exists():
         logger.warning("structured_skipped", reason="CSV not found", path=str(csv_path))

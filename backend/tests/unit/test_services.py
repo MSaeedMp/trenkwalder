@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from app.core.errors.catalog.tool import ToolError
+from app.core.errors.exceptions import BadRequest, ServiceUnavailable
 from app.models import Chunk, Employee
 from app.services.directory_service import DirectoryService
 from app.services.hr_service import HRService
@@ -72,7 +72,7 @@ async def test_directory_service_find_and_headcount() -> None:
     headcount = await svc.get_department_headcount()
     assert headcount["Engineering"] == 3
 
-    with pytest.raises(ValueError, match="At least one"):
+    with pytest.raises(BadRequest, match="At least one"):
         await svc.find_employees()
 
 
@@ -84,5 +84,5 @@ async def test_hr_service_forwards_and_wraps_errors() -> None:
     assert "18" in result
 
     svc_err = HRService(mcp_client=FakeMCPClient(error=RuntimeError("down")))  # type: ignore[arg-type]
-    with pytest.raises(ToolError, match="down"):
+    with pytest.raises(ServiceUnavailable, match="down"):
         await svc_err.call("get_vacation_balance", {})

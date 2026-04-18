@@ -15,6 +15,8 @@ class _AccessInfo(TypedDict, total=False):
 
 
 class AccessLogMiddleware:
+    """Log one compact access event for each HTTP request."""
+
     def __init__(self, app: ASGIApp, log_name: str = "app.access") -> None:
         self.app = app
         self.access_logger = structlog.stdlib.get_logger(log_name)

@@ -5,6 +5,7 @@ from typing import Any
 from google.genai import types
 
 from app.clients.mcp_client import MCPClient
+from app.core.errors.exceptions import BusinessError
 from app.core.observability import get_logger
 from app.services.directory_service import DirectoryService
 from app.services.hr_service import HRService
@@ -71,5 +72,5 @@ async def dispatch(name: str, args: dict[str, Any], services: Services) -> str:
             case _:
                 return await services.hr.call(name, args)
 
-    except ValueError as exc:
+    except BusinessError as exc:
         return json.dumps({"error": str(exc)})
