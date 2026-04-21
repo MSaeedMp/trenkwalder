@@ -24,6 +24,9 @@ const SUGGESTIONS = [
 
 export function Chat() {
   const [error, setError] = useState<string | null>(null);
+  const [citationsMap, setCitationsMap] = useState<Record<string, JSONValue[]>>({});
+  const [dataOffset, setDataOffset] = useState(0);
+  const dataOffsetRef = useRef(0);
   const { messages, input, handleInputChange, handleSubmit, status, stop, data, append } =
     useChat({
       api: "/api/v1/chat",
@@ -35,11 +38,31 @@ export function Chat() {
           content: message.content,
         })),
       }),
+      onFinish: (message) => {
+        if (message.role === "assistant") {
+          const currentData = dataRef.current;
+          if (currentData && currentData.length > dataOffsetRef.current) {
+            const slice = currentData.slice(dataOffsetRef.current);
+            dataOffsetRef.current = currentData.length;
+            setDataOffset(currentData.length);
+            setCitationsMap((prev) => ({ ...prev, [message.id]: slice }));
+          } else {
+            dataOffsetRef.current = currentData?.length ?? 0;
+            setDataOffset(dataOffsetRef.current);
+          }
+        }
+      },
       onError: (err) => {
         setError(err.message || "Something went wrong. Please try again.");
         setTimeout(() => setError(null), 5000);
       },
     });
+
+  // Keep a ref to `data` so onFinish can read the latest value
+  const dataRef = useRef(data);
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -142,14 +165,23 @@ export function Chat() {
               </div>
             </div>
           ) : (
-            messages.map((message, idx) => (
-              <MessageBubble
-                key={message.id}
-                message={message}
-                isStreaming={isActive && idx === messages.length - 1}
-                citationsData={message.role === "assistant" && idx === messages.length - 1 ? data : undefined}
-              />
-            ))
+            messages.map((message, idx) => {
+              const streaming = isActive && idx === messages.length - 1;
+              const citations =
+                message.role === "assistant"
+                  ? streaming
+                    ? data?.slice(dataOffset)
+                    : citationsMap[message.id]
+                  : undefined;
+              return (
+                <MessageBubble
+                  key={message.id}
+                  message={message}
+                  isStreaming={streaming}
+                  citationsData={citations}
+                />
+              );
+            })
           )}
           {isActive && messages[messages.length - 1]?.role === "user" && (
             <Shimmer />
